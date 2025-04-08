@@ -8,7 +8,7 @@ const Dashboard: React.FC = () => {
 
   // Récupération des produits via l'API
   useEffect(() => {
-    axios.get('/api/products')  // Remplace avec l'URL de ton API
+    axios.get('http://localhost:5000/api/produits')  // Remplace avec l'URL de ton API
       .then(response => setProduits(response.data))
       .catch(error => console.error('Erreur lors de la récupération des produits', error));
   }, []);

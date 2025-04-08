@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Table, Card, Button, Spinner, Alert } from 'react-bootstrap'; // Ajout du Spinner et Alert
+import { Container, Row, Col, Table, Card, Button, Spinner, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const History = () => {
   const [historique, setHistorique] = useState<any[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Indicateur de chargement
-  const [error, setError] = useState<string>(''); // Message d'erreur
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    // Remplacer par l'URL de ton API backend
-    axios.get('http://localhost:5000/api/history') // Met à jour l'URL ici si nécessaire
-      .then(response => {
+    axios.get('http://localhost:5000/api/stocks/historique')
+    .then(response => {
         setHistorique(response.data);
-        setLoading(false); // Fin du chargement
+        setLoading(false);
       })
       .catch(error => {
-        setError('Erreur lors de la récupération de l\'historique des stocks');
-        setLoading(false); // Fin du chargement même en cas d'erreur
-        console.error('Erreur lors de la récupération de l\'historique des stocks', error);
+        setError("Erreur lors de la récupération de l'historique des stocks");
+        setLoading(false);
+        console.error("Erreur lors de la récupération de l'historique des stocks", error);
       });
   }, []);
 
@@ -29,19 +28,15 @@ const History = () => {
           <h2 className="text-center text-primary">Historique des Stocks</h2>
         </Col>
       </Row>
-      
-      {/* Affichage du message d'erreur s'il y en a */}
+
       {error && (
         <Row>
           <Col>
-            <Alert variant="danger">
-              {error}
-            </Alert>
+            <Alert variant="danger">{error}</Alert>
           </Col>
         </Row>
       )}
 
-      {/* Affichage du tableau s'il n'y a pas d'erreur et que les données sont disponibles */}
       {!loading ? (
         <Row>
           <Col>
@@ -54,6 +49,7 @@ const History = () => {
                       <th>Date</th>
                       <th>Type</th>
                       <th>Quantité</th>
+                      <th>Commentaire</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -61,14 +57,15 @@ const History = () => {
                       historique.map((entry, index) => (
                         <tr key={index}>
                           <td>{entry.produit}</td>
-                          <td>{entry.date}</td>
+                          <td>{new Date(entry.date).toLocaleDateString()}</td>
                           <td>{entry.type}</td>
                           <td>{entry.quantite}</td>
+                          <td>{entry.commentaire || '-'}</td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={4} className="text-center">Aucune donnée disponible</td>
+                        <td colSpan={5} className="text-center">Aucune donnée disponible</td>
                       </tr>
                     )}
                   </tbody>
@@ -80,12 +77,11 @@ const History = () => {
       ) : (
         <Row>
           <Col className="d-flex justify-content-center">
-            <Spinner animation="border" variant="primary" /> {/* Affichage du loader pendant le chargement */}
+            <Spinner animation="border" variant="primary" />
           </Col>
         </Row>
       )}
 
-      {/* Bouton de retour */}
       <Row className="mt-3">
         <Col className="d-flex justify-content-center">
           <Link to="/">
@@ -95,6 +91,6 @@ const History = () => {
       </Row>
     </Container>
   );
-}
+};
 
 export default History;

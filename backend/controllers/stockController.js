@@ -1,49 +1,38 @@
-const db = require('../config/db');
+const stockModel = require('../models/stockModel');
 
-// Récupérer tous les stocks
+// Fonction pour récupérer les stocks avec des filtres
 const getStocks = (req, res) => {
-  const query = 'SELECT * FROM stocks';
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la récupération des stocks:', err);
-      return res.status(500).json({ message: 'Erreur lors de la récupération des stocks' });
-    }
-    res.json(results);
-  });
+  const filters = req.query;
+
+  stockModel.getStocks(filters)
+    .then(stocks => {
+      res.json(stocks);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Erreur lors de la récupération des stocks', error: err });
+    });
 };
 
-// Récupérer l'historique des mouvements
+// Fonction pour récupérer l'historique des mouvements
 const getHistorique = (req, res) => {
-  const query = `
-    SELECT 
-      p.nom AS produit,
-      m.date_mouvement AS date,
-      m.type,
-      m.quantite,
-      m.commentaire
-    FROM mouvements_stock m
-    JOIN produits p ON m.produit_id = p.produit_id
-    ORDER BY m.date_mouvement DESC
-  `;
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la récupération de l\'historique des stocks:', err);
-      return res.status(500).json({ message: 'Erreur lors de la récupération de l\'historique des stocks' });
-    }
-    res.json(results);
-  });
+  stockModel.getHistorique()
+    .then(historique => {
+      res.json(historique);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Erreur lors de la récupération de l\'historique', error: err });
+    });
 };
 
-// Récupérer les alertes de stocks faibles
+// Fonction pour récupérer les alertes des stocks faibles
 const getAlertesFaiblesStocks = (req, res) => {
-  const query = 'SELECT * FROM stocks WHERE quantite < 10';
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error('Erreur lors de la récupération des alertes de stocks faibles:', err);
-      return res.status(500).json({ message: 'Erreur lors de la récupération des alertes de stocks faibles' });
-    }
-    res.json(results);
-  });
+  stockModel.getAlertesFaiblesStocks()
+    .then(alertes => {
+      res.json(alertes);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Erreur lors de la récupération des alertes', error: err });
+    });
 };
 
 module.exports = {
