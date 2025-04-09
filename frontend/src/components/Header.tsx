@@ -19,6 +19,16 @@ const Header: React.FC = () => {
                   Historique
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/categories">
+                  Catégories
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link text-white" to="/ProduitTable">
+                ProduitTable
+                </Link>
+              </li>
             </ul>
           </nav>
         </div>
